@@ -7,11 +7,14 @@
 #include <time.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <fcntl.h>
 
 #define screenWidth 800
 #define screenHeight 800
-#define mapWidth 24
-#define mapHeight 24
+// #define mapWidth 24
+// #define mapHeight 24
+
+//gcc again.c -L./minilibx -lmlx -L./libft -lft -framework OpenGL -framework AppKit
 
 typedef struct s_color
 {
@@ -46,7 +49,9 @@ typedef struct s_game
 	 int stepY;
 	 int hit;
 	 int side;
-	 int worldMap[mapWidth][mapHeight];
+	 int mapWidth;
+	 int mapHeight;
+	 int **worldMap;
 	 int lineHeight;
 	 int drawStart;
 	 int drawEnd;
@@ -55,43 +60,15 @@ typedef struct s_game
 	double rot_speed;
 }			t_game;
 
-int worldMap[mapWidth][mapHeight]=
-{
-  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-  {1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,2,2,2,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
-  {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,3,0,0,0,3,0,0,0,1},
-  {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,2,2,0,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,0,0,0,0,5,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,0,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-};
-
 int		keys(int key, t_game *game);
 int wolf(t_game *game);
 void init(t_game *game);
 void drawline(int x1, int y0, int y1, t_game *game, int color);
+void read_map(char *file, t_game *game, int fd, char *line);
 
 
 int	main(int argc, char **argv)
 {
-	// t_data *data;
 	int		fd;
 	char	*line;
 	t_game *game;
@@ -100,17 +77,13 @@ int	main(int argc, char **argv)
 	line = NULL;
 	if (argc == 2)
 	{
-		// data = (t_data*)malloc(sizeof(t_data));
 		game = (t_game*)malloc(sizeof(t_game));
 		game->mlx_ptr = mlx_init();
 		game->win_ptr = mlx_new_window(game->mlx_ptr, screenWidth, screenHeight, "Game");
-	//	read_map(argv[1], data, fd, line);
-	//	mlx_string_put(data->mlx_ptr, data->win_ptr, 400, 100, 0xe6e6fa,
-	//		"Wolf3D");
-		init(game);
-
-	//	mlx_key_hook(data->win_ptr, keys, game);
-	 mlx_hook(game->win_ptr, 2, 5, keys, game);
+		read_map(argv[1], game, fd, line);
+		// mlx_string_put(game->mlx_ptr, game->win_ptr, 400, 100, 0xe6e6fa,
+		// 	"Wolf3D");
+	 	mlx_hook(game->win_ptr, 2, 5, keys, game);
 		mlx_loop(game->mlx_ptr);
 	}
 	else if (argc < 2)
@@ -119,9 +92,54 @@ int	main(int argc, char **argv)
 		return (-1);
 }
 
+void get_info(char *file, t_game *game, int fd, char *line)
+{
+	game->mapWidth = 0;
+	game->mapHeight = 0;
+	fd = open(file, O_RDONLY);
+	while(get_next_line(fd, &line) == 1)
+	{
+		game->mapWidth = ft_count_words(line, ' ');
+		game->mapHeight++;
+	}
+	printf("My height %d and width %d\n", game->mapHeight, game->mapWidth);
+	free(line);
+	close(fd);
+}
+
+void read_map(char *file, t_game *game, int fd, char *line)
+{
+	char **parsing;
+	int a = 0;
+	int x = 0;
+	int i = 0;
+
+	get_info(file, game, fd, line);
+	game->worldMap = (int**)malloc(sizeof(int*) * game->mapHeight);
+	while(i < game->mapHeight)
+	{
+		game->worldMap[i] = (int*)malloc(sizeof(int) * game->mapWidth);
+		i++;
+	}
+ 	fd = open(file, O_RDONLY);
+ 	while (get_next_line(fd, &line) && a < game->mapHeight)
+ 	{
+ 		parsing = ft_strsplit(line, ' ');
+		x = 0;
+		while (x < game->mapWidth)
+		{
+			printf("%d %d\n", x, a);
+			game->worldMap[a][x] = ft_atoi(parsing[x]);
+			x++;
+		}
+		a++;
+	}
+	init(game);
+}
+
 void init(t_game *game)
 {
-	game->posX = 22;
+	game->posX = 12;
 	game->posY = 12;
   	game->dirX = -1;
 	game->dirY = 0;
@@ -180,7 +198,7 @@ int wolf(t_game *game)
 			  game->MapY += game->stepY;
 			  game->side = 1;
 		  }
-		  if (worldMap[game->MapX][game->MapY] > 0)
+		  if (game->worldMap[game->MapX][game->MapY] > 0)
 		  {
 			  game->hit = 1;
 		  }
@@ -207,7 +225,7 @@ int wolf(t_game *game)
 		//choose wall color
 	 	t_color color;
 	 	int COLOR;
-	 	switch(worldMap[game->MapX][game->MapY])
+	 	switch(game->worldMap[game->MapX][game->MapY])
 	 	{
 	   		case 1:  COLOR = color.RGB_Red;  break; //red
 	   		case 2:  COLOR = color.RGB_Green;  break; //green
@@ -225,7 +243,6 @@ int wolf(t_game *game)
    	game->frameTime = (double)(end_t - start_t) / CLOCKS_PER_SEC;
 	game->moveSpeed = game->frameTime * 5.0; //the constant value is in squares/second
 	game->rot_speed = game->frameTime * 3.0;
-	printf("move %f rotation %f", game->moveSpeed, game->rot_speed);
 	return (0);
 }
 
@@ -277,33 +294,33 @@ void drawline(int x1, int y0, int y1, t_game *game, int color)
 
 void move_forward(t_game *game)
 {
-	if(worldMap[(int)(game->posX + game->dirX * game->moveSpeed)][(int)game->posY] == 0)
+	if(game->worldMap[(int)(game->posX + game->dirX * game->moveSpeed)][(int)game->posY] == 0)
 	 	game->posX += game->dirX * game->moveSpeed;
- 	else if(worldMap[(int)game->posX][(int)(game->posY + game->dirY * game->moveSpeed)] == 0)
+ 	else if(game->worldMap[(int)game->posX][(int)(game->posY + game->dirY * game->moveSpeed)] == 0)
 	 	game->posY += game->dirY * game->moveSpeed;
 }
 
 void go_back(t_game *game)
 {
-	if(worldMap[(int)(game->posX - game->dirX * game->moveSpeed)][(int)game->posY] == 0)
+	if(game->worldMap[(int)(game->posX - game->dirX * game->moveSpeed)][(int)game->posY] == 0)
 		 game->posX -= game->dirX * game->moveSpeed;
-	if(worldMap[(int)game->posX][(int)(game->posY - game->dirY * game->moveSpeed)] == 0)
+	if(game->worldMap[(int)game->posX][(int)(game->posY - game->dirY * game->moveSpeed)] == 0)
 		 game->posY -= game->dirY * game->moveSpeed;
 }
 
 void lean_left(t_game *game)
 {
-	if(worldMap[(int)(game->posX - game->planeX * game->moveSpeed)][(int)game->posY] == 0)
+	if(game->worldMap[(int)(game->posX - game->planeX * game->moveSpeed)][(int)game->posY] == 0)
 		 game->posX -= game->planeX * game->moveSpeed;
-	if(worldMap[(int)game->posX][(int)(game->posY - game->planeY * game->moveSpeed)] == 0)
+	if(game->worldMap[(int)game->posX][(int)(game->posY - game->planeY * game->moveSpeed)] == 0)
 		 game->posY -= game->planeY * game->moveSpeed;
 }
 
 void lean_right(t_game *game)
 {
-	if(worldMap[(int)(game->posX - game->planeX * game->moveSpeed)][(int)game->posY] == 0)
+	if(game->worldMap[(int)(game->posX - game->planeX * game->moveSpeed)][(int)game->posY] == 0)
 		 game->posX += game->planeX * game->moveSpeed;
-	if(worldMap[(int)game->posX][(int)(game->posY - game->planeY * game->moveSpeed)] == 0)
+	if(game->worldMap[(int)game->posX][(int)(game->posY - game->planeY * game->moveSpeed)] == 0)
 		 game->posY += game->planeY * game->moveSpeed;
 }
 
