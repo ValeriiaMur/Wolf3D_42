@@ -6,7 +6,7 @@
 /*   By: vmuradia <vmuradia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/18 16:05:06 by vmuradia          #+#    #+#             */
-/*   Updated: 2018/12/18 17:50:44 by vmuradia         ###   ########.fr       */
+/*   Updated: 2018/12/19 17:04:47 by vmuradia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,44 +35,56 @@ int	main(int argc, char **argv)
 		return (-1);
 }
 
+void game_init(t_game *game, int x)
+{
+	game->cameraX = 2 * x / (double)screenWidth - 1;
+	game->rayDirX = game->dirX + game->planeX * game->cameraX;
+	game->rayDirY = game->dirY + game->planeY * game->cameraX;
+	game->MapX = (int)game->posX;
+	game->MapY = (int)game->posY;
+	game->deltaDistX = fabs(1 / game->rayDirX);
+	game->deltaDistY = fabs(1 / game->rayDirY);
+	game->hit = 0;
+}
+
+void moving(t_game *game)
+{
+	if (game->rayDirX < 0)
+	{
+		game->stepX = -1;
+		game->sideDistX = (game->posX - game->MapX) * game->deltaDistX;
+	}
+	else
+	{
+		game->stepX = 1;
+		game->sideDistX = (game->MapX + 1.0 - game->posX) * game->deltaDistX;
+	}
+	if (game->rayDirY < 0)
+	{
+		game->stepY = -1;
+		game->sideDistY = (game->posY - game->MapY) * game->deltaDistY;
+	}
+	else
+	{
+		game->stepY = 1;
+		game->sideDistY = (game->MapY + 1.0 - game->posY) * game->deltaDistY;
+	}
+}
+
 
 int wolf(t_game *game)
 {
-	clock_t start_t, end_t;
+	clock_t start_t;
+	clock_t end_t;
+
 	t_color color;
 	int paint_walls;
 
 	start_t = clock();
 	for (int x = 0; x < screenWidth; x++)
   	{
-		game->cameraX = 2 * x / (double)screenWidth - 1; //x-coordinate in camera space
-		game->rayDirX = game->dirX + game->planeX * game->cameraX;
-		game->rayDirY = game->dirY + game->planeY * game->cameraX;
-      	game->MapX = (int)game->posX;
-      	game->MapY = (int)game->posY;
-      	game->deltaDistX = fabs(1 / game->rayDirX);
-      	game->deltaDistY = fabs(1 / game->rayDirY);
-      	game->hit = 0; //was there a wall hit?
-		if (game->rayDirX < 0)
-      	{
-        	game->stepX = -1;
-        	game->sideDistX = (game->posX - game->MapX) * game->deltaDistX;
-      	}
-      	else
-      	{
-        	game->stepX = 1;
-        	game->sideDistX = (game->MapX + 1.0 - game->posX) * game->deltaDistX;
-      	}
-      	if (game->rayDirY < 0)
-      	{
-        	game->stepY = -1;
-        	game->sideDistY = (game->posY - game->MapY) * game->deltaDistY;
-      	}
-      	else
-      	{
-        	game->stepY = 1;
-        	game->sideDistY = (game->MapY + 1.0 - game->posY) * game->deltaDistY;
-      	}
+		game_init(game, x);
+		moving(game);
 	  	while (game->hit == 0)
 	  	{
 		  //go to the next square either in X or Y direction
@@ -89,29 +101,19 @@ int wolf(t_game *game)
 			  game->side = 1;
 		  }
 		  if (game->worldMap[game->MapX][game->MapY] > 0)
-		  {
 			  game->hit = 1;
-		  }
 		}
 		if (game->side == 0)
-		{
 			game->perpWallDist = (game->MapX - game->posX + (1 - game->stepX) / 2) / game->rayDirX;
-		}
 		else
-		{
 			game->perpWallDist = (game->MapY - game->posY + (1 - game->stepY) / 2) / game->rayDirY;
-		}
 		game->lineHeight = screenHeight / game->perpWallDist;
 	    game->drawStart = -(game->lineHeight) / 2 + screenHeight / 2;
 	    if(game->drawStart < 0)
-		{
 			game->drawStart = 0;
-		}
 	    game->drawEnd = game->lineHeight / 2 + screenHeight / 2;
 	    if(game->drawEnd >= screenHeight)
-		{
 			game->drawEnd = screenHeight - 1;
-		}
 	 	switch(game->worldMap[game->MapX][game->MapY])
 	 	{
 	   		case 1:  paint_walls = color.RGB_Red;  break; //red
@@ -120,8 +122,8 @@ int wolf(t_game *game)
 	   		case 4:  paint_walls = color.RGB_White;  break; //white
 	   		default: paint_walls = color.RGB_Yellow; break; //yellow
 	 	}
-	 if (game->side == 1)
-		 paint_walls = paint_walls / 2;
+	 	if (game->side == 1)
+			paint_walls = paint_walls / 2;
 	 //draw the pixels of the stripe as a vertical line. Drawstart is
 	 //the lowest pixel y and end is the highest y. x0 and x1 is the same
 	drawline(x, game->drawStart, game->drawEnd, game, paint_walls);
