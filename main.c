@@ -6,7 +6,7 @@
 /*   By: vmuradia <vmuradia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/18 16:05:06 by vmuradia          #+#    #+#             */
-/*   Updated: 2018/12/19 17:04:47 by vmuradia         ###   ########.fr       */
+/*   Updated: 2018/12/19 17:32:08 by vmuradia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int	main(int argc, char **argv)
 	line = NULL;
 	if (argc == 2)
 	{
+		system("/nfs/2018/v/vmuradia/wolf3d/music.sh");
 		game = (t_game*)malloc(sizeof(t_game));
 		game->mlx_ptr = mlx_init();
 		game->win_ptr = mlx_new_window(game->mlx_ptr, screenWidth, screenHeight, "Game");
