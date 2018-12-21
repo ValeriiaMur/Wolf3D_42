@@ -6,7 +6,7 @@
 /*   By: vmuradia <vmuradia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/18 17:33:41 by vmuradia          #+#    #+#             */
-/*   Updated: 2018/12/18 17:34:04 by vmuradia         ###   ########.fr       */
+/*   Updated: 2018/12/20 19:49:36 by vmuradia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,10 @@ void camera_right(t_game *game)
 
 	old_dir_x = game->dirX;
 	old_plane_x = game->planeX;
-	game->dirX = game->dirX * cos(game->rot_speed) - game->dirY * sin(-game->rot_speed);
-	game->dirY = old_dir_x * sin(-game->rot_speed) + game->dirY *cos(game->rot_speed);
-	game->planeX = game->planeX * cos(game->rot_speed) - game->planeY* sin(-game->rot_speed);
-	game->planeY = old_plane_x* sin(-game->rot_speed) + game->planeY *cos(game->rot_speed);
+	game->dirX = game->dirX * cos(-game->rot_speed) - game->dirY * sin(-game->rot_speed);
+	game->dirY = old_dir_x * sin(-game->rot_speed) + game->dirY *cos(-game->rot_speed);
+	game->planeX = game->planeX * cos(-game->rot_speed) - game->planeY* sin(-game->rot_speed);
+	game->planeY = old_plane_x* sin(-game->rot_speed) + game->planeY *cos(-game->rot_speed);
 }
 
 void camera_left(t_game *game)
@@ -87,11 +87,7 @@ int		keys(int key, t_game *game)
 		camera_right(game);
 	else if(key == 0)
 		camera_left(game);
-	// if (game->img)
-	// 	del_image(game, game->img);
-	game->status = 1;
-	// game->img = new_image(game);
-	// wolf(game);
-	// mlx_put_image_to_window(game->m_p, game->w_p, game->img->image, 0, 0);
+	mlx_clear_window(game->mlx_ptr, game->win_ptr);
+	wolf(game);
 	return (0);
 }

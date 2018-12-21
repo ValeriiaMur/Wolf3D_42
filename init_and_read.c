@@ -6,7 +6,7 @@
 /*   By: vmuradia <vmuradia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/18 17:43:01 by vmuradia          #+#    #+#             */
-/*   Updated: 2018/12/18 17:47:16 by vmuradia         ###   ########.fr       */
+/*   Updated: 2018/12/19 17:18:55 by vmuradia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void get_info(char *file, t_game *game, int fd, char *line)
 	fd = open(file, O_RDONLY);
 	while(get_next_line(fd, &line) == 1)
 	{
-		game->mapWidth = words_count(line, ' ');
+		game->mapWidth = ft_count_words(line, ' ');
 		game->mapHeight++;
 	}
 	free(line);
@@ -57,15 +57,11 @@ void read_map(char *file, t_game *game, int fd, char *line)
 
 void init(t_game *game)
 {
-	game->posX = game->mapWidth / 2;
-	game->posY = game->mapHeight / 2;
+	game->posX = 12;
+	game->posY = 12;
   	game->dirX = -1;
 	game->dirY = 0;
  	game->planeX = 0;
 	game->planeY = 0.66;
-	game->img = NULL;
-	game->status = 1;
-
-	// game->img = new_image(game);
-	// wolf(game);
+	wolf(game);
 }

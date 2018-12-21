@@ -6,7 +6,7 @@
 /*   By: vmuradia <vmuradia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/18 16:02:56 by vmuradia          #+#    #+#             */
-/*   Updated: 2018/12/18 17:51:35 by vmuradia         ###   ########.fr       */
+/*   Updated: 2018/12/20 19:24:13 by vmuradia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,22 +24,25 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
-#define screenWidth 1024
-#define screenHeight 1024
+#define screenWidth 1200
+#define screenHeight 1000
+#define frame_time 0.07
+#define texWidth 64
+#define texHeight 64
 
-typedef struct	s_image
+typedef struct s_color
 {
-	void	*image;
-	char	*ptr;
-	int		bpp;
-	int		stride;
-	int		endian;
-}				t_image;
+	int RGB_Red;
+	int RGB_Green;
+	int RGB_Blue;
+	int RGB_White;
+	int RGB_Yellow;
+}				t_color;
 
 typedef struct s_game
 {
-	void		*m_p;
-	void		*w_p;
+	void		*mlx_ptr;
+	void		*win_ptr;
 	double posX;
 	double posY;
   double dirX;
@@ -66,11 +69,8 @@ typedef struct s_game
 	 int lineHeight;
 	 int drawStart;
 	 int drawEnd;
-	 double frameTime;
  	double moveSpeed;
 	double rot_speed;
-	int status;
-	t_image	*img;
 }			t_game;
 
 
@@ -86,8 +86,8 @@ void lean_right(t_game *game);
 void lean_left(t_game *game);
 void go_back(t_game *game);
 void move_forward(t_game *game);
-t_image		*del_image(t_game *w, t_image *img);
-void		image_set_pixel(t_image *image, int x, int y, int color);
-t_image		*new_image(t_game *w);
+void game_init(t_game *game, int x);
+void moving(t_game *game);
+void make_walls(t_game *game, int x);
 
 #endif
