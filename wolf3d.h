@@ -24,22 +24,22 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
-#define screenWidth 1200
-#define screenHeight 1000
+#define screenWidth 1024
+#define screenHeight 1024
 
-typedef struct s_color
+typedef struct	s_image
 {
-	int RGB_Red;
-	int RGB_Green;
-	int RGB_Blue;
-	int RGB_White;
-	int RGB_Yellow;
-}				t_color;
+	void	*image;
+	char	*ptr;
+	int		bpp;
+	int		stride;
+	int		endian;
+}				t_image;
 
 typedef struct s_game
 {
-	void		*mlx_ptr;
-	void		*win_ptr;
+	void		*m_p;
+	void		*w_p;
 	double posX;
 	double posY;
   double dirX;
@@ -69,6 +69,8 @@ typedef struct s_game
 	 double frameTime;
  	double moveSpeed;
 	double rot_speed;
+	int status;
+	t_image	*img;
 }			t_game;
 
 
@@ -84,5 +86,8 @@ void lean_right(t_game *game);
 void lean_left(t_game *game);
 void go_back(t_game *game);
 void move_forward(t_game *game);
+t_image		*del_image(t_game *w, t_image *img);
+void		image_set_pixel(t_image *image, int x, int y, int color);
+t_image		*new_image(t_game *w);
 
 #endif
