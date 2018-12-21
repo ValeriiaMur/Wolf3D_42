@@ -16,7 +16,7 @@ void move_forward(t_game *game)
 {
 	if(game->worldMap[(int)(game->posX + game->dirX * game->moveSpeed)][(int)game->posY] == 0)
 	 	game->posX += game->dirX * game->moveSpeed;
- 	else if(game->worldMap[(int)game->posX][(int)(game->posY + game->dirY * game->moveSpeed)] == 0)
+ 	if(game->worldMap[(int)game->posX][(int)(game->posY + game->dirY * game->moveSpeed)] == 0)
 	 	game->posY += game->dirY * game->moveSpeed;
 }
 
@@ -51,10 +51,10 @@ void camera_right(t_game *game)
 
 	old_dir_x = game->dirX;
 	old_plane_x = game->planeX;
-	game->dirX = game->dirX * cos(-game->rot_speed) - game->dirY * sin(-game->rot_speed);
-	game->dirY = old_dir_x * sin(-game->rot_speed) + game->dirY *cos(-game->rot_speed);
-	game->planeX = game->planeX * cos(-game->rot_speed) - game->planeY* sin(-game->rot_speed);
-	game->planeY = old_plane_x* sin(-game->rot_speed) + game->planeY *cos(-game->rot_speed);
+	game->dirX = game->dirX * cos(game->rot_speed) - game->dirY * sin(-game->rot_speed);
+	game->dirY = old_dir_x * sin(-game->rot_speed) + game->dirY *cos(game->rot_speed);
+	game->planeX = game->planeX * cos(game->rot_speed) - game->planeY* sin(-game->rot_speed);
+	game->planeY = old_plane_x* sin(-game->rot_speed) + game->planeY *cos(game->rot_speed);
 }
 
 void camera_left(t_game *game)
@@ -87,7 +87,11 @@ int		keys(int key, t_game *game)
 		camera_right(game);
 	else if(key == 0)
 		camera_left(game);
-	mlx_clear_window(game->mlx_ptr, game->win_ptr);
-	wolf(game);
+	// if (game->img)
+	// 	del_image(game, game->img);
+	game->status = 1;
+	// game->img = new_image(game);
+	// wolf(game);
+	// mlx_put_image_to_window(game->m_p, game->w_p, game->img->image, 0, 0);
 	return (0);
 }

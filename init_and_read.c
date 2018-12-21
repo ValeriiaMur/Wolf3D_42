@@ -19,7 +19,7 @@ void get_info(char *file, t_game *game, int fd, char *line)
 	fd = open(file, O_RDONLY);
 	while(get_next_line(fd, &line) == 1)
 	{
-		game->mapWidth = ft_count_words(line, ' ');
+		game->mapWidth = words_count(line, ' ');
 		game->mapHeight++;
 	}
 	free(line);
@@ -57,11 +57,15 @@ void read_map(char *file, t_game *game, int fd, char *line)
 
 void init(t_game *game)
 {
-	game->posX = 12;
-	game->posY = 12;
+	game->posX = game->mapWidth / 2;
+	game->posY = game->mapHeight / 2;
   	game->dirX = -1;
 	game->dirY = 0;
  	game->planeX = 0;
 	game->planeY = 0.66;
-	wolf(game);
+	game->img = NULL;
+	game->status = 1;
+
+	// game->img = new_image(game);
+	// wolf(game);
 }
