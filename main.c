@@ -126,6 +126,14 @@ int wolf(t_game *game)
 		game->drawEnd = game->lineHeight / 2 + screenHeight / 2;
 		if(game->drawEnd >= screenHeight)
 			game->drawEnd = screenHeight - 1;
+		
+		//for floor
+		double wallX; //where exactly the wall was hit
+	 	if (game->side == 0)
+			wallX = game->posY + game->perpWallDist * game->rayDirY;
+	 	else
+			wallX = game->posX + game->perpWallDist * game->rayDirX;
+	 	wallX -= floor(wallX);
 		switch(game->worldMap[game->MapX][game->MapY])
 		{
 			case 1:  paint_walls = 0xff0000;  break; //red
@@ -139,6 +147,44 @@ int wolf(t_game *game)
 		//draw the pixels of the stripe as a vertical line. Drawstart is
 		//the lowest pixel y and end is the highest y. x0 and x1 is the same
 		drawline(x, game->drawStart, game->drawEnd, game, paint_walls);
+		//FLOOR CASTING BLYA
+		double floorXWall, floorYWall;
+		//4 different wall directions possible
+		if(game->side == 0 && game->rayDirX > 0)
+		{
+		floorXWall = game->MapX;
+		floorYWall = game->MapY + wallX;
+		}
+		else if(game->side == 0 && game->rayDirX < 0)
+		{
+		floorXWall = game->MapX + 1.0;
+		floorYWall = game->MapY + wallX;
+		}
+		else if(game->side == 1 && game->rayDirY > 0)
+		{
+		floorXWall = game->MapX + wallX;
+		floorYWall = game->MapY;
+		}
+		else
+		{
+		floorXWall = game->MapX + wallX;
+		floorYWall = game->MapY + 1.0;
+		}
+		double distWall, distPlayer, currentDist;
+
+		distWall = game->perpWallDist;
+		distPlayer = 0.0;
+
+		if (game->drawEnd < 0)
+			game->drawEnd = screenHeight; //becomes < 0 when the integer overflows
+
+		//draw the floor from drawEnd to the bottom of the screen
+		for(int y = game->drawEnd + 1; y < screenHeight; y++)
+		{
+			currentDist = screenHeight / (2.0 * y - screenHeight); //you could make a small lookup table for this instead
+			// mlx_pixel_put(game->mlx_ptr, game->win_ptr, x, y, 0xC2E3DC);
+			image_set_pixel(game->img, x, y, 0xC2E3DC);
+		}
 	}
 	game->frameTime = 0.03;
 	game->moveSpeed = game->frameTime * 5.0; //the constant value is in squares/second
