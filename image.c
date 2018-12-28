@@ -1,11 +1,11 @@
 #include "./wolf3d.h"
 
-t_image		*del_image(t_game *w, t_image *img)
+t_image		*del_image(void *m_p, t_image *img)
 {
 	if (img != NULL)
 	{
 		if (img->image != NULL)
-			mlx_destroy_image(w->m_p, img->image);
+			mlx_destroy_image(m_p, img->image);
 		free(img);
 	}
 	return (NULL);
@@ -13,7 +13,8 @@ t_image		*del_image(t_game *w, t_image *img)
 
 void		image_set_pixel(t_image *image, int x, int y, int color)
 {
-	*(int*)(image->ptr + ((x + (y << 10)) << 2)) = color;
+	if (x < screenWidth && x > 0 && y < screenHeight && y > 0)
+		*(int*)(image->ptr + ((x + (y << 10)) << 2)) = color;
 }
 
 t_image		*new_image(t_game *w)

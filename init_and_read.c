@@ -57,8 +57,8 @@ void read_map(char *file, t_game *game, int fd, char *line)
 
 void init(t_game *game)
 {
-	game->posX = game->mapWidth / 2;
-	game->posY = game->mapHeight / 2;
+	game->posX = game->mapHeight / 2;
+	game->posY = game->mapWidth / 2;
   	game->dirX = -1;
 	game->dirY = 0;
  	game->planeX = 0;

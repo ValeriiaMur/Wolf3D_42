@@ -34,6 +34,8 @@ typedef struct	s_image
 	int		bpp;
 	int		stride;
 	int		endian;
+	int		width;
+	int		height;
 }				t_image;
 
 typedef struct s_game
@@ -70,7 +72,8 @@ typedef struct s_game
  	double moveSpeed;
 	double rot_speed;
 	int status;
-	t_image	*img;
+	t_image	*texture[6];
+	t_image *img;
 }			t_game;
 
 
@@ -86,7 +89,7 @@ void lean_right(t_game *game);
 void lean_left(t_game *game);
 void go_back(t_game *game);
 void move_forward(t_game *game);
-t_image		*del_image(t_game *w, t_image *img);
+t_image		*del_image(void *m_p, t_image *img);
 void		image_set_pixel(t_image *image, int x, int y, int color);
 t_image		*new_image(t_game *w);
 

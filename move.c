@@ -81,12 +81,14 @@ int		keys(int key, t_game *game)
     	go_back(game);
 	else if (key == 123)
 		lean_left(game);
-	else if(key == 124)
+	else if (key == 124)
 		lean_right(game);
 	else if (key == 2)
 		camera_right(game);
-	else if(key == 0)
+	else if (key == 0)
 		camera_left(game);
+	else if (key == 257)
+		game->frameTime = !game->frameTime;
 	// if (game->img)
 	// 	del_image(game, game->img);
 	game->status = 1;
