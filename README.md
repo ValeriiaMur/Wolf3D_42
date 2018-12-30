@@ -8,7 +8,9 @@ This 42 project is about creating a first game - a simple clone of an iconic Wol
 You can create any maze for this game using a simple format :
 
 1 1 1
+
 1 0 1
+
 1 1 1
 
 Where numbers bigger than 1 mean walls and 0 means a floor.
