@@ -16,5 +16,3 @@ You can create any maze for this game using a simple format :
 Where numbers bigger than 1 mean walls and 0 means a floor.
 
 ![Game](https://pp.userapi.com/c846218/v846218378/167e5c/HJ5Gpi5t83M.jpg)
-
-![Game](https://pp.userapi.com/c846218/v846218378/167e5c/HJ5Gpi5t83M.jpg)
