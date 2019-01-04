@@ -14,6 +14,11 @@ You can create any maze for this game using a simple format :
 1 1 1
 
 Where numbers bigger than 1 mean walls and 0 means a floor. The map made of all zeroes will automatically have walls around it. 
+
+**How to play?**
+
+Press 'w' to move forward and 's' to go backwards. 'a' and 'd' buttons are used to move left and right, while arrows are used to move the camera. Press 'shift' to get a 5-second boost and 'esc' to exit.
+
 *The bonuses include:*
 
 1. FPS counter
@@ -21,8 +26,7 @@ Where numbers bigger than 1 mean walls and 0 means a floor. The map made of all 
 2. The use of textures
 3. Minimap 
 4. Menu
-5. 5-second speed boost (press shift)
-
+5. 5-second speed boost
 
 
 ![Game](https://pp.userapi.com/c852028/v852028653/839c0/fU_e46yAw1A.jpg)
