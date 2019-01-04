@@ -13,6 +13,18 @@ You can create any maze for this game using a simple format :
 
 1 1 1
 
-Where numbers bigger than 1 mean walls and 0 means a floor.
+Where numbers bigger than 1 mean walls and 0 means a floor. The map made of all zeroes will automatically have walls around it. 
+*The bonuses include:*
 
-![Game](https://pp.userapi.com/c846218/v846218378/167e5c/HJ5Gpi5t83M.jpg)
+1. FPS counter
+2. Sprites (a racoon who is hiding in one of the rooms in this game, but it can be literally anything in an XPM format. Loaded in the same func as all the textures.)
+2. The use of textures
+3. Minimap 
+4. Menu
+5. 5-second speed boost (press shift)
+
+
+
+![Game](https://pp.userapi.com/c852028/v852028653/839c0/fU_e46yAw1A.jpg)
+![Game](https://pp.userapi.com/c852028/v852028653/839ca/JRvFo7eWTyM.jpg)
+![Game](https://pp.userapi.com/c852028/v852028653/839de/46xefC5YG-A.jpg)
