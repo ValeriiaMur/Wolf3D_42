@@ -6,39 +6,33 @@
 #    By: vmuradia <vmuradia@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/27 18:27:06 by vmuradia          #+#    #+#              #
-#    Updated: 2018/12/18 17:47:19 by vmuradia         ###   ########.fr        #
+#    Updated: 2019/01/03 21:09:15 by vmuradia         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = wolf3d
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra
-SRC = main.c move.c init_and_read.c 
+CFLAGS = -Wall -Werror -Wextra -O3 -Ofast -march=native -flto=full
+SRC += srcs/main.c srcs/move.c srcs/init.c srcs/image.c srcs/control.c
+SRC += srcs/drawing.c srcs/game.c srcs/minimap.c srcs/sprite.c srcs/helper.c
 HEADERS = wolf3d.h
 LIBFT = libft/libft.a
-MINILIBX = minilibx/liblmx.a
-OBJ=$(SRC:.c=.o)
+MINILIBX = ./minilibx -lmlx -framework OpenGL -framework AppKit
+OBJ=*.o
 GREEN = \033[1;32m
 
 all : $(NAME)
 
-$(NAME) : $(LIBFT) $(MINILIBX) $(OBJ)
+$(NAME) :
 		Make -C libft
 		Make -C minilibx
-		$(CC) $(CFLAGS) $(SRC) -o $(NAME) -I $(HEADERS) -L. $(LIBFT) -L ./minilibx -lmlx -framework OpenGL -framework AppKit
+		$(CC) $(CFLAGS) $(SRC) -o $(NAME) -I $(HEADERS) -L. $(LIBFT) -L $(MINILIBX)
 
 		@echo "$(GREEN)Project successfully compiled"
 
-$(OBJ): $(LIBFT)
-		$(CC) $(FLAGS) -c $(SRC)
-$(LIBFT):
-		make libft
-$(MINILIBX):
-		make minilibx
-
-.PHONY : clean fclean re
-
 clean :
+		make clean -C libft
+		make clean -C minilibx
 		-rm -f $(OBJ)
 		@echo "$(GREEN)All object files are deleted"
 
@@ -48,3 +42,5 @@ fclean : clean
 		@echo "$(GREEN)Cleaned everything"
 
 re : fclean all
+
+.PHONY : clean fclean re

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-open "https://www.youtube.com/watch?v=gcFmh6h3avw?autoplay=1"
+open -j -g "https://www.youtube.com/watch?v=lBhAFukF0ws?autoplay=1"&disown
